@@ -2,9 +2,8 @@ import React from 'react';
 import { PropTypes } from 'react';
 import TimePickerPanel from 'rc-time-picker/lib/Panel';
 import classNames from 'classnames';
-import defaultLocale from './locale/zh_CN';
-import assign from 'object-assign';
 import warning from 'warning';
+import getLocale from '../_util/getLocale';
 
 export default function wrapPicker(Picker, defaultFormat?) {
   const PickerWrapper = React.createClass({
@@ -30,19 +29,6 @@ export default function wrapPicker(Picker, defaultFormat?) {
 
     contextTypes: {
       antLocale: PropTypes.object,
-    },
-
-    getLocale() {
-      const props = this.props;
-      const context = this.context;
-      let locale = defaultLocale;
-      if (context.antLocale && context.antLocale.DatePicker) {
-        locale = context.antLocale.DatePicker;
-      }
-      // 统一合并为完整的 Locale
-      const result = assign({}, locale, props.locale);
-      result.lang = assign({}, locale.lang, props.locale.lang);
-      return result;
     },
 
     handleOpenChange(open) {
@@ -72,7 +58,7 @@ export default function wrapPicker(Picker, defaultFormat?) {
         [`${inputPrefixCls}-sm`]: props.size === 'small',
       });
 
-      const locale = this.getLocale();
+      const locale = getLocale(this.props, this.context, 'DatePicker');
 
       const timeFormat = (props.showTime && props.showTime.format) || 'HH:mm:ss';
       const rcTimePickerProps = {
